@@ -1,0 +1,57 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Approved Lawyers{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Approved Lawyers</h2>
+
+    <table class="table table-bordered table-hover bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Specialization</th>
+                <th>Experience</th>
+                <th>City</th>
+                <th>Fee</th>
+                <th>About</th>
+                <th>Documents</th>
+                <th>Registered On</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for lawyer in lawyers %}
+        <tr>
+            <td>{{ lawyer.full_name }}</td>
+            <td>{{ lawyer.email }}</td>
+            <td>{{ lawyer.phone }}</td>
+            <td>{{ lawyer.specialization }}</td>
+            <td>{{ lawyer.experience }}</td>
+            <td>{{ lawyer.city }}</td>
+            <td>{{ lawyer.fee }}</td>
+            <td>{{ lawyer.about|truncatewords:10 }}</td>
+
+            <td>
+                {% if lawyer.documents %}
+                    <a href="{{ lawyer.documents.url }}" target="_blank" class="btn btn-sm btn-primary">
+                        View
+                    </a>
+                {% else %}
+                    <span class="text-muted">N/A</span>
+                {% endif %}
+            </td>
+
+            <td>{{ lawyer.created_at|date:"d M Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
