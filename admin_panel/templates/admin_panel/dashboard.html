@@ -1,183 +1,220 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Welcome, {{ request.user.username }}</h2>
-    <p>This is the admin dashboard.</p>
-    <a href="{% url 'admin_logout' %}">Logout</a>
-    <a href="{% url 'pending_lawyer_requests' %}">pending lawyers page</a>
-    
-</body>
-</html> {% endcomment %}
+{% extends "base_admin.html" %}
 
+{% block title %}Dashboard{% endblock %}
 
-{% comment %} <!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
+{% block page_title %}Dashboard Overview{% endblock %}
 
-<body class="bg-light">
+{% block content %}
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">⚖ Admin Dashboard</a>
-        <a href="/" class="btn btn-outline-light">Home</a>
-    </div>
-</nav>
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
 
-<div class="container">
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-    <h2 class="mb-4">Welcome, Admin</h2>
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-blue), var(--accent-green));
+    }
 
-    <div class="row g-4">
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
 
-        <!-- Total Approved Lawyers -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-left-primary">
-                <div class="card-body">
-                    <h5 class="card-title">Approved Lawyers</h5>
-                    <h2 class="text-primary">{{ total_lawyers }}</h2>
-                </div>
-            </div>
-        </div>
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
 
-        <!-- Pending Lawyer Requests -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-left-warning">
-                <div class="card-body">
-                    <h5 class="card-title">Pending Requests</h5>
-                    <h2 class="text-warning">{{ pending_requests }}</h2>
-                    <a href="{% url 'pending_lawyer_requests' %}" 
-                       class="btn btn-warning mt-2">
-                        View Requests
-                    </a>
-                </div>
-            </div>
-        </div>
+    .stat-card.blue .stat-icon {
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: var(--primary-blue);
+    }
 
-    </div>
+    .stat-card.green .stat-icon {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: var(--accent-green);
+    }
 
+    .stat-card.gold .stat-icon {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: var(--accent-gold);
+    }
+
+    .stat-card.red .stat-icon {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: var(--accent-red);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-gray);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .action-btn {
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .action-btn:hover {
+        border-color: var(--primary-blue);
+        background: var(--bg-light);
+        transform: translateY(-3px);
+    }
+
+    .action-btn i {
+        font-size: 2rem;
+        color: var(--primary-blue);
+    }
+
+    .action-btn span {
+        font-weight: 500;
+    }
+
+    .welcome-banner {
+        background: linear-gradient(135deg, var(--primary-navy), #2c5282);
+        border-radius: 16px;
+        padding: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .welcome-banner h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-banner p {
+        color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <h2>Welcome to Admin Dashboard</h2>
+    <p>Manage your AI Lawyer Matching Platform efficiently</p>
 </div>
 
-</body>
-</html> {% endcomment %}
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-        }
-        /* Sidebar */
-        #sidebar {
-            min-width: 220px;
-            max-width: 220px;
-            background-color: #343a40;
-            color: white;
-        }
-        #sidebar .nav-link {
-            color: white;
-        }
-        #sidebar .nav-link:hover {
-            background-color: #495057;
-            color: #fff;
-        }
-        /* Main content */
-        #main-content {
-            flex: 1;
-            padding: 20px;
-        }
-        .card {
-            border-left-width: 5px;
-        }
-        .border-left-primary { border-left: 5px solid #0d6efd; }
-        .border-left-warning { border-left: 5px solid #ffc107; }
-        .border-left-success { border-left: 5px solid #198754; }
-        .border-left-danger { border-left: 5px solid #dc3545; }
-    </style>
-</head>
-<body>
-
-<!-- Sidebar -->
-<div id="sidebar" class="d-flex flex-column p-3">
-    <h3 class="text-center mb-4">⚖ Admin Panel</h3>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="{% url 'admin_dashboard' %}" class="nav-link active">Dashboard</a>
-        </li>
-        <li>
-            <a href="{% url 'pending_lawyer_requests' %}" class="nav-link">Pending Requests</a>
-        </li>
-        <li>
-            <a href="{% url 'approved_lawyers' %}" class="nav-link">Approved Lawyers</a>
-        </li>
-        <li>
-            <a href="" class="nav-link">Profile</a>
-        </li>
-        <li>
-            <a href="{% url 'admin_logout' %}" class="nav-link">Logout</a>
-        </li>
-    </ul>
-</div>
-
-<!-- Main Content -->
-<div id="main-content">
-    <h2 class="mb-4">Welcome, Admin</h2>
-    <div class="row g-4">
-
-        <!-- Total Approved Lawyers -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-left-primary p-3">
-                <h5 class="card-title">Approved Lawyers</h5>
-                <h2 class="text-primary">{{ total_lawyers }}</h2>
-            </div>
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card blue">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
         </div>
+        <div class="stat-value">{{ total_lawyers }}</div>
+        <div class="stat-label">Total Lawyers</div>
+    </div>
 
-        <!-- Pending Requests -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-left-warning p-3">
-                <h5 class="card-title">Pending Requests</h5>
-                <h2 class="text-warning">{{ pending_requests }}</h2>
-                <a href="{% url 'pending_lawyer_requests' %}" class="btn btn-warning mt-2 btn-sm">
-                    View Requests
-                </a>
-            </div>
+    <div class="stat-card gold">
+        <div class="stat-icon">
+            <i class="fas fa-clock"></i>
         </div>
+        <div class="stat-value">{{ pending_requests }}</div>
+        <div class="stat-label">Pending Requests</div>
+    </div>
 
-        <!-- Total Clients -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-left-success p-3">
-                <h5 class="card-title">Total Clients</h5>
-                <h2 class="text-success">{{ total_clients }}</h2>
-            </div>
+    <div class="stat-card green">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
         </div>
+        <div class="stat-value">{{ total_lawyers }}</div>
+        <div class="stat-label">Approved Lawyers</div>
+    </div>
 
-        <!-- Total Cases -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-left-danger p-3">
-                <h5 class="card-title">Total Cases</h5>
-                <h2 class="text-danger">{{ total_cases }}</h2>
-            </div>
+    <div class="stat-card red">
+        <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
         </div>
-
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Platform Status</div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!-- Quick Actions -->
+<h3 style="margin-bottom: 1rem; color: var(--primary-navy);">Quick Actions</h3>
+<div class="quick-actions">
+    <a href="{% url 'pending_lawyer_requests' %}" class="action-btn">
+        <i class="fas fa-user-clock"></i>
+        <span>Review Pending</span>
+    </a>
+    <a href="{% url 'approved_lawyers' %}" class="action-btn">
+        <i class="fas fa-users"></i>
+        <span>View Lawyers</span>
+    </a>
+    <a href="/" class="action-btn">
+        <i class="fas fa-home"></i>
+        <span>Visit Site</span>
+    </a>
+</div>
 
+{% endblock %}

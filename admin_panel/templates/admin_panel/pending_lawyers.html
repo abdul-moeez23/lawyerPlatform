@@ -1,90 +1,50 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <h2>Pending Lawyer Requests</h2>
+{% extends "base_admin.html" %}
 
-        <table border="1" cellpadding="10">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>Experience</th>
-                <th>Fee</th>
-                <th>Action</th>
-            </tr>
+{% block title %}Pending Lawyer Requests{% endblock %}
 
-            {% for r in requests %}
-            <tr>
-                <td>{{ r.full_name }}</td>
-                <td>{{ r.email }}</td>
-                <td>{{ r.city }}</td>
-                <td>{{ r.experience }}</td>
-                <td>{{ r.fee }}</td>
-                <td>
-                    <a href="{% url 'approve_lawyer' r.id %}">Approve</a>
-                </td>
-            </tr>
-            {% endfor %}
+{% block content %}
+
+<h2 class="mb-4">Pending Lawyer Requests</h2>
+
+<div class="card-box">
+    {% if requests %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>City</th>
+                    <th>Experience</th>
+                    <th>Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td class="fw-bold text-primary-custom">{{ r.full_name }}</td>
+                    <td>{{ r.email }}</td>
+                    <td>{{ r.city }}</td>
+                    <td>{{ r.experience }} yrs</td>
+                    <td>Rs {{ r.fee }}</td>
+                    <td>
+                        <a href="{% url 'approve_lawyer' r.id %}" class="btn btn-primary-custom btn-sm">
+                            <i class="fas fa-check"></i> Approve
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-
-</body>
-</html> {% endcomment %}
-
-{% include "base_admin.html" %}
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pending Lawyer Requests</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-
-<body class="bg-light">
-
-<div class="container mt-4">
-
-    <h2 class="mb-4">Pending Lawyer Requests</h2>
-
-    <table class="table table-bordered table-hover bg-white">
-        <thead class="table-dark">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>Experience</th>
-                <th>Fee</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        {% for r in requests %}
-            <tr>
-                <td>{{ r.full_name }}</td>
-                <td>{{ r.email }}</td>
-                <td>{{ r.city }}</td>
-                <td>{{ r.experience }}</td>
-                <td>{{ r.fee }}</td>
-                <td>
-                    <a href="{% url 'approve_lawyer' r.id %}"
-                       class="btn btn-success btn-sm">
-                       Approve
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
-    </table>
-
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-check-circle fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No pending requests at the moment.</p>
+    </div>
+    {% endif %}
 </div>
 
-</body>
-</html>
+{% endblock %}

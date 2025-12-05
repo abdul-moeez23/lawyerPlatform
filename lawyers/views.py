@@ -135,7 +135,7 @@ def lawyer_change_password(request):
 def lawyer_logout(request):
     
     request.session.flush()
-    return redirect('lawyer_login')
+    return redirect('/')
 
 
 

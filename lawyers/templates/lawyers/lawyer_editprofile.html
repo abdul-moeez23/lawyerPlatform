@@ -1,113 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% extends 'lawyers/base_lawyer.html' %}
 
-    <style>
-        body { background: #f5f6fa; }
-        .sidebar { height: 100vh; height: auto;  background: #0d6efd; padding: 20px; color: #fff; }
-        .sidebar a { color: #fff; text-decoration: none; display: block; margin: 12px 0; }
-        .form-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
-    </style>
-</head>
+{% block title %}Edit Profile{% endblock %}
 
-<body>
+{% block content %}
+<h2 class="mb-4">Edit Profile</h2>
 
-<div class="container-fluid">
-  <div class="row">
+<form method="POST" class="card-box" enctype="multipart/form-data">
+    {% csrf_token %}
 
-    <!-- Sidebar -->
-    <div class="col-md-2 sidebar">
-      <h3 class="mb-4">Lawyer Panel</h3>
-      <a href="{% url 'lawyer_dashboard' %}">Dashboard</a>
-      <a href="{% url 'lawyer_profile' %}">My Profile</a>
-      <a href="{% url 'edit_lawyer_profile' %}">Edit Profile</a>
-      <a href="{% url 'lawyer_change_password' %}">Change Password</a>
-      <a href="{% url 'lawyer_logout' %}" class="text-warning">Logout</a> 
+    <!-- Personal Info -->
+    <h5 class="mb-3">Personal Information</h5>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" name="full_name" value="{{ lawyer.full_name }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email (readonly)</label>
+            <input type="email" class="form-control" name="email" value="{{ lawyer.email }}" readonly>
+        </div>
     </div>
 
-    <!-- Content -->
-    <div class="col-md-10 p-4">
-
-      <h2>Edit Profile</h2>
-
-    <form method="POST" class="form-box" enctype="multipart/form-data">
-      {% csrf_token %}
-
-      <!-- Personal Info -->
-      <div class="mb-3">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" name="full_name" value="{{ lawyer.full_name }}" required>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">Email (readonly)</label>
-          <input type="email" class="form-control" name="email" value="{{ lawyer.email }}" readonly>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">Phone</label>
-          <input type="text" class="form-control" name="phone" value="{{ lawyer.phone }}" required>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">City</label>
-          <select class="form-select" name="city" required>
-              <option value="{{ lawyer.city }}" selected>{{ lawyer.city }}</option>
-              <option>Lahore</option>
-              <option>Karachi</option>
-              <option>Islamabad</option>
-              <option>Rawalpindi</option>
-              <option>Multan</option>
-              <option>Peshawar</option>
-          </select>
-      </div>
-
-      <!-- Professional Info -->
-      <div class="mb-3">
-          <label class="form-label">Specialization</label>
-          <select name="specialization" class="form-select" required>
-              <option value="{{ lawyer.specialization }}" selected>{{ lawyer.specialization }}</option>
-              <option>Criminal Law</option>
-              <option>Civil Law</option>
-              <option>Family Law</option>
-              <option>Business Law</option>
-              <option>Immigration Law</option>
-              <option>Cyber Crime</option>
-              <option>Property Law</option>
-              <option>Tax Law</option>
-          </select>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">Experience (Years)</label>
-          <input type="number" class="form-control" name="experience" value="{{ lawyer.experience }}" required>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">Fee</label>
-          <input type="text" class="form-control" name="fee" value="{{ lawyer.fee }}" required>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">About</label>
-          <textarea class="form-control" rows="4" name="about">{{ lawyer.about }}</textarea>
-      </div>
-
-      <div class="mb-3">
-          <label class="form-label">Upload Certificates (Optional)</label>
-          <input type="file" class="form-control" name="documents">
-      </div>
-
-      <button class="btn btn-primary">Update Profile</button>
-    </form>
-
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" name="phone" value="{{ lawyer.phone }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">City</label>
+            <select class="form-select" name="city" required>
+                <option value="{{ lawyer.city }}" selected>{{ lawyer.city }}</option>
+                <option>Lahore</option>
+                <option>Karachi</option>
+                <option>Islamabad</option>
+                <option>Rawalpindi</option>
+                <option>Multan</option>
+                <option>Peshawar</option>
+            </select>
+        </div>
     </div>
 
-  </div>
-</div>
+    <!-- Professional Info -->
+    <h5 class="mb-3 mt-4">Professional Information</h5>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Specialization</label>
+            <select name="specialization" class="form-select" required>
+                <option value="{{ lawyer.specialization }}" selected>{{ lawyer.specialization }}</option>
+                <option>Criminal Law</option>
+                <option>Civil Law</option>
+                <option>Family Law</option>
+                <option>Business Law</option>
+                <option>Immigration Law</option>
+                <option>Cyber Crime</option>
+                <option>Property Law</option>
+                <option>Tax Law</option>
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Experience (Years)</label>
+            <input type="number" class="form-control" name="experience" value="{{ lawyer.experience }}" required>
+        </div>
+    </div>
 
-</body>
-</html>
+    <div class="mb-3">
+        <label class="form-label">Fee</label>
+        <input type="text" class="form-control" name="fee" value="{{ lawyer.fee }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">About</label>
+        <textarea class="form-control" rows="4" name="about">{{ lawyer.about }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Upload Certificates (Optional)</label>
+        <input type="file" class="form-control" name="documents">
+    </div>
+
+    <button class="btn btn-primary-custom mt-3">Update Profile</button>
+</form>
+{% endblock %}
