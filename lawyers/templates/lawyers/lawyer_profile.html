@@ -7,15 +7,15 @@
 
 <div class="card-box mb-3">
 
-  <h4>{{ lawyer.full_name }}</h4>
+  <h4>{{ lawyer.user.first_name }}</h4>
   <hr>
 
-  <p><strong><i class="fas fa-envelope me-2 text-muted"></i>Email:</strong> {{ lawyer.email }}</p>
-  <p><strong><i class="fas fa-phone me-2 text-muted"></i>Phone:</strong> {{ lawyer.phone }}</p>
-  <p><strong><i class="fas fa-briefcase me-2 text-muted"></i>Experience:</strong> {{ lawyer.experience }} years</p>
-  <p><strong><i class="fas fa-balance-scale me-2 text-muted"></i>Category:</strong> {{ lawyer.category }}</p>
-  <p><strong><i class="fas fa-money-bill-wave me-2 text-muted"></i>Fee:</strong> Rs {{ lawyer.fee }}</p>
-  <p><strong><i class="fas fa-info-circle me-2 text-muted"></i>About:</strong> {{ lawyer.about }}</p>
+  <p><strong><i class="fas fa-envelope me-2 text-muted"></i>Email:</strong> {{ lawyer.user.email}}</p>
+  <p><strong><i class="fas fa-phone me-2 text-muted"></i>Phone:</strong> {{ lawyer.user.phone }}</p>
+  <p><strong><i class="fas fa-briefcase me-2 text-muted"></i>Experience:</strong> {{ lawyer.experience_years}} years</p>
+  <p><strong><i class="fas fa-balance-scale me-2 text-muted"></i>Category:</strong> {{ lawyer.city }}</p>
+  <p><strong><i class="fas fa-money-bill-wave me-2 text-muted"></i>Fee:</strong> Rs {{ lawyer.fee_band }}</p>
+  <p><strong><i class="fas fa-info-circle me-2 text-muted"></i>About:</strong> {{ lawyer.bar_enrollment }}</p>
 
 </div>
 {% endblock %}

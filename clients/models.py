@@ -1,24 +1,72 @@
-from django.db import models
 
-# Create your models here.
-from users.models import User
+# from django.db import models
+# from django.contrib.auth.models import AbstractUser
+# from django.utils import timezone
+# from django.contrib.postgres.fields import ArrayField
+# from django.core.validators import MinValueValidator, MaxValueValidator
+# from users.models import User, City, Court, SubCategory, FeeBand, Language
 
-class CaseDetails(models.Model):
-    URGENCY_CHOICES = [
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-    ]
+# class Case(models.Model):
+#     STATUS_CHOICES = (
+#         ('draft', 'Draft'),
+#         ('submitted', 'Submitted'),
+#         ('matched', 'Matched'),
+#         ('shortlisted', 'Shortlisted'),
+#         ('hired', 'Hired'),
+#         ('closed', 'Closed'),
+#     )
 
-    case_id = models.AutoField(primary_key=True)
-    client = models.ForeignKey(User, on_delete=models.CASCADE)
-    case_category = models.CharField(max_length=100)
-    court_level = models.CharField(max_length=100)
-    budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    urgency = models.CharField(max_length=10, choices=URGENCY_CHOICES, default='Medium')
-    language = models.CharField(max_length=50, null=True, blank=True)
-    case_description = models.TextField()
-    submission_date = models.DateTimeField(auto_now_add=True)
+#     client = models.ForeignKey(User, on_delete=models.CASCADE)
+#     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+#     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
+#     court_level = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True)
+#     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+#     fee_band = models.ForeignKey(FeeBand, on_delete=models.SET_NULL, null=True)
+    
+#     urgency = models.CharField(max_length=50)
+#     language_preference = models.CharField(max_length=50)
+#     description = models.TextField()
 
-    def __str__(self):
-        return f"{self.case_category} by {self.client.full_name}"
+#     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+#     created_at = models.DateTimeField(default=timezone.now)
+
+#     embedding = ArrayField(models.FloatField(), blank=True, null=True)
+
+#     def __str__(self):
+#         return f"Case {self.id} - {self.client.username}"
+
+
+# class CaseDocument(models.Model):
+#     case = models.ForeignKey(Case, on_delete=models.CASCADE)
+#     file = models.FileField(upload_to='case_docs/')
+#     uploaded_at = models.DateTimeField(default=timezone.now)
+
+
+# # =========================
+# # MATCHING RESULTS (Fit Score + Reasons)
+# # =========================
+
+
+# class Interaction(models.Model):
+#     STATUS_CHOICES = (
+#         ('invited', 'Invited'),
+#         ('accepted', 'Accepted'),
+#         ('rejected', 'Rejected'),
+#         ('hired', 'Hired'),
+#     )
+
+#     case = models.ForeignKey(Case, on_delete=models.CASCADE)
+#     lawyer = models.ForeignKey(LawyerProfile, on_delete=models.CASCADE)
+#     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+#     created_at = models.DateTimeField(default=timezone.now)
+
+
+# # =========================
+# # OPTIONAL FEEDBACK
+# # =========================
+
+# class Rating(models.Model):
+#     interaction = models.OneToOneField(Interaction, on_delete=models.CASCADE)
+#     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+#     comments = models.TextField(blank=True, null=True)
+#     created_at = models.DateTimeField(default=timezone.now)

@@ -3,81 +3,179 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Edit Profile</h2>
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-2">Edit Your Profile</h2>
+        <p class="text-muted mb-4">Update your information below. Admin may re-verify changes if needed.</p>
+    </div>
+</div>
 
-<form method="POST" class="card-box" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <!-- Personal Info -->
-    <h5 class="mb-3">Personal Information</h5>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" name="full_name" value="{{ lawyer.full_name }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Email (readonly)</label>
-            <input type="email" class="form-control" name="email" value="{{ lawyer.email }}" readonly>
-        </div>
-    </div>
+    <!-- Personal Information -->
+    <div class="card-box mb-4">
+        <h5><i class="fas fa-user me-2"></i>Personal Information</h5>
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Phone</label>
-            <input type="text" class="form-control" name="phone" value="{{ lawyer.phone }}" required>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-user text-muted me-2"></i>Full Name
+                </label>
+                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-envelope text-muted me-2"></i>Email
+                </label>
+                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <label class="form-label">City</label>
-            <select class="form-select" name="city" required>
-                <option value="{{ lawyer.city }}" selected>{{ lawyer.city }}</option>
-                <option>Lahore</option>
-                <option>Karachi</option>
-                <option>Islamabad</option>
-                <option>Rawalpindi</option>
-                <option>Multan</option>
-                <option>Peshawar</option>
-            </select>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-phone text-muted me-2"></i>Phone
+                </label>
+                <input type="text" class="form-control" name="phone" value={{user.phone}} id="phone" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-city text-muted me-2"></i>City
+                </label>
+                <select class="form-select" name="city" required>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}" {% if city.id == lawyer.city_id %}selected{% endif %}>
+                        {{ city.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
 
     <!-- Professional Info -->
-    <h5 class="mb-3 mt-4">Professional Information</h5>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Specialization</label>
-            <select name="specialization" class="form-select" required>
-                <option value="{{ lawyer.specialization }}" selected>{{ lawyer.specialization }}</option>
-                <option>Criminal Law</option>
-                <option>Civil Law</option>
-                <option>Family Law</option>
-                <option>Business Law</option>
-                <option>Immigration Law</option>
-                <option>Cyber Crime</option>
-                <option>Property Law</option>
-                <option>Tax Law</option>
-            </select>
+    <div class="card-box mb-4">
+        <h5><i class="fas fa-briefcase me-2"></i>Professional Information</h5>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-user-clock text-muted me-2"></i>Experience (Years)
+                </label>
+                <input type="number" class="form-control" name="experience" value="{{ lawyer.experience_years }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">
+                    <i class="fas fa-money-bill-wave text-muted me-2"></i>Fee Band
+                </label>
+                <select class="form-select" name="fee_band" required>
+                    {% for band in fee_bands %}
+                    <option value="{{ band.id }}" {% if band.id == lawyer.fee_band_id %}selected{% endif %}>
+                        {{ band.label }} (Rs {{ band.min_fee }} - Rs {{ band.max_fee }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Experience (Years)</label>
-            <input type="number" class="form-control" name="experience" value="{{ lawyer.experience }}" required>
+    </div>
+
+    <!-- Courts -->
+    <div class="card-box mb-4">
+        <h5><i class="fas fa-landmark me-2"></i>Courts You Practice In</h5>
+        <p class="text-muted small mb-3">Select all courts where you practice</p>
+
+        <div class="row">
+            {% for court in courts %}
+            <div class="col-md-6 col-lg-4 mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" 
+                           name="courts" value="{{ court.id }}"
+                           id="court_{{ court.id }}"
+                           {% if court in lawyer.courts.all %}checked{% endif %}>
+
+                    <label class="form-check-label" for="court_{{ court.id }}">
+                        {{ court.name }}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Fee</label>
-        <input type="text" class="form-control" name="fee" value="{{ lawyer.fee }}" required>
+    <!-- Languages -->
+    <div class="card-box mb-4">
+        {% comment %} <h5><i class="fas fa-language me-2"></i>Languages</h5>
+        <p class="text-muted small mb-3">Select all languages you speak</p> {% endcomment %}
+
+        <div class="row">
+            {% for language in languages %}
+            <div class="col-md-6 col-lg-3 mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox"
+                           name="languages" value="{{ language.id }}"
+                           id="lang_{{ language.id }}"
+                           {% if language in lawyer.languages.all %}checked{% endif %}>
+
+                    <label class="form-check-label" for="lang_{{ language.id }}">
+                        {{ language.name }}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">About</label>
-        <textarea class="form-control" rows="4" name="about">{{ lawyer.about }}</textarea>
+    <!-- Practice Areas -->
+    <div class="card-box mb-4">
+        <h5><i class="fas fa-balance-scale me-2"></i>Practice Areas</h5>
+        <p class="text-muted small mb-3">Select your practice areas</p>
+
+        <div class="row">
+            {% for area in practice_areas %}
+            <div class="col-md-6 col-lg-4 mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox"
+                           name="practice_areas" value="{{ area.id }}"
+                           id="area_{{ area.id }}"
+                           {% if area in lawyer.practice_areas.all %}checked{% endif %}>
+
+                    <label class="form-check-label" for="area_{{ area.id }}">
+                        {{ area.name }}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Upload Certificates (Optional)</label>
-        <input type="file" class="form-control" name="documents">
+    <!-- Documents -->
+    <div class="card-box mb-4">
+        <h5><i class="fas fa-file-upload me-2"></i>Update Certificates</h5>
+
+        <div class="mb-3">
+            <label class="form-label">
+                <i class="fas fa-paperclip text-muted me-2"></i>Upload Documents
+            </label>
+            <input type="file" class="form-control" name="documents" accept=".pdf,.jpg,.jpeg,.png">
+            <small class="text-muted">If you upload new files, old documents will be replaced.</small>
+        </div>
     </div>
 
-    <button class="btn btn-primary-custom mt-3">Update Profile</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary-custom btn-lg px-5">
+            <i class="fas fa-save me-2"></i>Update Profile
+        </button>
+    </div>
 </form>
+<script>
+document.getElementById('phone').addEventListener('input', function (e) {
+    // Remove all non-digits AND non-plus characters
+    this.value = this.value.replace(/[^0-9+]/g, '');
+});
+</script>
+
 {% endblock %}

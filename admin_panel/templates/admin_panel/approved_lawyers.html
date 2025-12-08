@@ -1,3 +1,4 @@
+
 {% extends "base_admin.html" %}
 
 {% block title %}Approved Lawyers{% endblock %}
@@ -13,30 +14,58 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Phone</th>
-                    <th>Specialization</th>
-                    <th>Experience</th>
                     <th>City</th>
+                    <th>Experience</th>
                     <th>Fee</th>
-                    <th>About</th>
-                    <th>Documents</th>
-                    <th>Registered On</th>
+                    <th>Practice Areas</th>
+                    <th>Courts</th>
+                    {% comment %} <th>Languages</th> {% endcomment %}
+                    <th>Bar</th>
+                    
+                    {% comment %} <th>Past Matters</th> {% endcomment %}
+                    {% comment %} <th>Documents</th> {% endcomment %}
+                    {% comment %} <th>Action</th> {% endcomment %}
                 </tr>
             </thead>
 
             <tbody>
                 {% for lawyer in lawyers %}
                 <tr>
-                    <td class="fw-bold text-primary-custom">{{ lawyer.full_name }}</td>
-                    <td>{{ lawyer.email }}</td>
-                    <td>{{ lawyer.phone }}</td>
-                    <td><span class="badge bg-light text-dark border">{{ lawyer.specialization }}</span></td>
-                    <td>{{ lawyer.experience }} yrs</td>
+                    <td class="fw-bold text-primary-custom">{{ lawyer.user.first_name }}</td>
+                    <td>{{ lawyer.user.email }}</td>
                     <td>{{ lawyer.city }}</td>
-                    <td>Rs {{ lawyer.fee }}</td>
-                    <td><small class="text-muted">{{ lawyer.about|truncatewords:5 }}</small></td>
+                    <td>{{ lawyer.experience_years }} yrs</td>
+                    <td>Rs {{ lawyer.fee_band.min_fee }} - {{ lawyer.fee_band.max_fee }}</td>
 
+                    <!-- Practice Areas -->
                     <td>
+                        {% for area in lawyer.practice_areas.all %}
+                            <span class="badge bg-light text-dark border">{{ area.name }}</span>
+                        {% empty %}
+                            <span class="text-muted small">N/A</span>
+                        {% endfor %}
+                    </td>
+
+                    <!-- Courts -->
+                    <td>
+                        {% for court in lawyer.courts.all %}
+                            <span class="badge bg-light text-dark border">{{ court.name }}</span>
+                        {% empty %}
+                            <span class="text-muted small">N/A</span>
+                        {% endfor %}
+                    </td>
+
+                    
+                    
+                    <!-- Bar Council -->
+                    <td>{{ lawyer.bar_enrollment|default:"N/A" }}</td>
+
+                    
+                    <td>
+                        {{ lawyer.past_matters.count }}
+                    </td>
+
+                    {% comment %} <td>
                         {% if lawyer.documents %}
                         <a href="{{ lawyer.documents.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-file-alt"></i> View
@@ -44,9 +73,14 @@
                         {% else %}
                         <span class="text-muted small">N/A</span>
                         {% endif %}
-                    </td>
+                    </td> {% endcomment %}
 
-                    <td class="text-muted small">{{ lawyer.created_at|date:"d M Y" }}</td>
+                    <!-- Action Buttons -->
+
+                    {% comment %} <td>
+                        <a href="{% url 'view_lawyer_details' lawyer.id %}" 
+                           class="btn btn-sm btn-primary">View</a> 
+                    </td> {% endcomment %}
                 </tr>
                 {% endfor %}
             </tbody>

@@ -17,6 +17,12 @@
                     <th>City</th>
                     <th>Experience</th>
                     <th>Fee</th>
+                    <th>Practice Areas</th>
+                    <th>Courts</th>
+                    {% comment %} <th>Languages</th> {% endcomment %}
+                    <th>Bar</th>
+                    <th>Past Matters</th>
+                    <th>Documents</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -24,13 +30,55 @@
             <tbody>
                 {% for r in requests %}
                 <tr>
-                    <td class="fw-bold text-primary-custom">{{ r.full_name }}</td>
-                    <td>{{ r.email }}</td>
-                    <td>{{ r.city }}</td>
-                    <td>{{ r.experience }} yrs</td>
-                    <td>Rs {{ r.fee }}</td>
+                    <td class="fw-bold text-primary-custom">{{ r.user.first_name }} {{ r.user.last_name }}</td>
+                    <td>{{ r.user.email }}</td>
+                    <td>{{ r.city.name }}</td>
+                    <td>{{ r.experience_years }} yrs</td>
+                    <td>Rs {{ r.fee_band.min_fee }} - {{ r.fee_band.max_fee }}</td>
                     <td>
-                        <a href="{% url 'approve_lawyer' r.id %}" class="btn btn-primary-custom btn-sm">
+                        {% for pa in r.practice_areas.all %}
+                        {{ pa.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for c in r.courts.all %}
+                        {{ c.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% comment %} <td>
+                        {% for lang in r.languages.all %}
+                        {{ lang.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td> {% endcomment %}
+                    <td>{{ r.bar_enrollment }}</td>
+
+                    <td>
+                        {% if r.matters.exists %}
+                        <ul>
+                            {% for m in r.matters.all %}
+                            <li>{{ m.subcategory.name }} | {{ m.court.name }} | {{ m.year }} | {{ m.duration_months }}
+                                months | Rs {{ m.fee_band.name }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        None
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if r.verificationdocument_set.exists %}
+                        <ul>
+                            {% for doc in r.verificationdocument_set.all %}
+                            <li><a href="{{ doc.file.url }}" target="_blank">Document {{ forloop.counter }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        None
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'approve_lawyer' r.id %}" class="btn btn-success btn-sm mb-1">
                             <i class="fas fa-check"></i> Approve
                         </a>
                     </td>

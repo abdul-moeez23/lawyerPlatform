@@ -179,15 +179,15 @@
         <div class="stat-icon">
             <i class="fas fa-clock"></i>
         </div>
-        <div class="stat-value">{{ pending_requests }}</div>
-        <div class="stat-label">Pending Requests</div>
+        <div class="stat-value">{{ pending_lawyers }}</div>
+        <div class="stat-label">Pending Lawyers</div>
     </div>
 
     <div class="stat-card green">
         <div class="stat-icon">
             <i class="fas fa-check-circle"></i>
         </div>
-        <div class="stat-value">{{ total_lawyers }}</div>
+        <div class="stat-value">{{ verified_lawyers }}</div>
         <div class="stat-label">Approved Lawyers</div>
     </div>
 
@@ -214,6 +214,27 @@
     <a href="/" class="action-btn">
         <i class="fas fa-home"></i>
         <span>Visit Site</span>
+    </a>
+</div>
+
+<!-- Data Management Section -->
+<h3 style="margin-bottom: 1rem; margin-top: 2.5rem; color: var(--primary-navy);">Data Management</h3>
+<div class="quick-actions">
+    <a href="{% url 'manage_cities' %}" class="action-btn">
+        <i class="fas fa-city"></i>
+        <span>Manage Cities</span>
+    </a>
+    <a href="{% url 'manage_courts' %}" class="action-btn">
+        <i class="fas fa-landmark"></i>
+        <span>Manage Courts</span>
+    </a>
+    <a href="{% url 'manage_practice_areas' %}" class="action-btn">
+        <i class="fas fa-balance-scale"></i>
+        <span>Practice Areas</span>
+    </a>
+    <a href="{% url 'manage_fee_bands' %}" class="action-btn">
+        <i class="fas fa-money-bill-wave"></i>
+        <span>Fee Bands</span>
     </a>
 </div>
 

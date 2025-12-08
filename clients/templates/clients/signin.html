@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lawyer Sign In - Lawgorithm</title>
+    <title>Sign In - Lawgorithm</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -52,17 +52,6 @@
             background-clip: text;
         }
 
-        .badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #c9a961, #d4b76e);
-            color: #1a2b4a;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
         h1 {
             font-family: 'Poppins', sans-serif;
             font-size: 1.75rem;
@@ -91,7 +80,8 @@
         }
 
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 0.875rem 1rem;
             border: 1px solid #e2dfd9;
@@ -236,11 +226,10 @@
     <div class="signin-container">
         <div class="logo">
             <div class="logo-text">Lawgorithm</div>
-            <div class="badge">⚖️ Lawyer Portal</div>
         </div>
 
         <h1>Welcome Back</h1>
-        <p class="subtitle">Sign in to your lawyer account</p>
+        <p class="subtitle">Sign in to access your account</p>
 
         {% if messages %}
             {% for message in messages %}
@@ -251,12 +240,15 @@
             {% endfor %}
         {% endif %}
 
-        <form method="POST" action="{% url 'lawyer_login' %}">
+        
+
+
+        <form method="POST">
             {% csrf_token %}
 
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
             </div>
 
             <div class="form-group">
@@ -267,7 +259,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary">Sign In to Dashboard</button>
+            <button type="submit" class="btn-primary">Sign In</button>
         </form>
 
         <div class="divider">
@@ -275,28 +267,27 @@
         </div>
 
         <div class="signup-link">
-            Don't have an account? <a href="{% url 'lawyer_signup' %}">Register as a Lawyer</a>
+            Don't have an account? <a href="{% url 'index' %}">Sign up</a>
         </div>
 
         <div class="back-home">
             <a href="{% url 'index' %}">← Back to Home</a>
         </div>
     </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const tempMessages = document.querySelectorAll('[data-temporary="true"]');
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const tempMessages = document.querySelectorAll('[data-temporary="true"]');
+                tempMessages.forEach(msg => {
+                    setTimeout(() => {
+                        msg.style.transition = "opacity 0.5s";
+                        msg.style.opacity = "0";
 
-            tempMessages.forEach(msg => {
-                setTimeout(() => {
-                    msg.style.transition = "opacity 0.5s";
-                    msg.style.opacity = "0";
-
-                    setTimeout(() => msg.remove(), 500);
-                }, 3000); // 3 seconds after message appears
+                        setTimeout(() => msg.remove(), 500);
+                    }, 3000); // 3 seconds after message appears
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

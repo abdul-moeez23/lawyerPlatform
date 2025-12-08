@@ -1,28 +1,48 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+class User(AbstractUser):
+    ROLE_CHOICES = (
+        ('client', 'Client'),
+        ('lawyer', 'Lawyer'),
+        ('admin', 'Admin'),
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    phone = models.CharField(max_length=20, blank=True, null=True)
 
-class User(models.Model):
-    ROLE_CHOICES = [
-        ('Client', 'Client'),
-        ('Lawyer', 'Lawyer'),
-        ('Admin', 'Admin'),
-    ]
 
-    user_id = models.AutoField(primary_key=True)
-    full_name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=150, unique=True)
-    password_hash = models.CharField(max_length=255)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    date_created = models.DateTimeField(auto_now_add=True)
+# =========================
+# LOOKUP TABLES
+# =========================
 
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self): return self.name
 
-    # objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
+class Court(models.Model):
+    name = models.CharField(max_length=150)
+    def __str__(self): return self.name
 
-    def __str__(self):
-        return f"{self.full_name} ({self.role})"
+
+class Category(models.Model):
+    name = models.CharField(max_length=150)
+    def __str__(self): return self.name
+
+
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    def __str__(self): return self.name
+
+
+class FeeBand(models.Model):
+    label = models.CharField(max_length=100)
+    min_fee = models.IntegerField(default=0)
+    max_fee = models.IntegerField(default=0)
+    def __str__(self): return self.label
+
+
+class Language(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self): return self.name

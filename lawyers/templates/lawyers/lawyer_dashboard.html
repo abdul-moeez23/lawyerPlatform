@@ -3,53 +3,557 @@
 {% block title %}Lawyer Dashboard{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-5">
-  <h2 class="mb-0">Welcome, {{ lawyer.full_name }}</h2>
-  <span class="text-muted"><i class="far fa-calendar-alt me-2"></i>{% now "l, F jS, Y" %}</span>
+<!-- Welcome Header -->
+<div class="welcome-header mb-5">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="display-5 mb-2">Welcome back, {{ lawyer.full_name }}</h1>
+      <p class="text-muted mb-0">
+        <i class="far fa-calendar-alt me-2"></i>{% now "l, F jS, Y" %}
+        <span class="ms-3"><i class="far fa-clock me-2"></i>{% now "g:i A" %}</span>
+      </p>
+    </div>
+    <div class="profile-badge">
+      <div class="avatar-circle">
+        <i class="fas fa-user-tie"></i>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+  <!-- Total Cases Card -->
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-card-blue">
+      <div class="stat-icon">
+        <i class="fas fa-briefcase"></i>
+      </div>
+      <div class="stat-content">
+        <h3 class="stat-number">0</h3>
+        <p class="stat-label">Total Cases</p>
+        <div class="stat-footer">
+          <span class="badge-pill">All Time</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Clients Card -->
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-card-green">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <h3 class="stat-number">0</h3>
+        <p class="stat-label">Active Clients</p>
+        <div class="stat-footer">
+          <span class="badge-pill">Current</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointments Card -->
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-card-purple">
+      <div class="stat-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="stat-content">
+        <h3 class="stat-number">0</h3>
+        <p class="stat-label">Appointments</p>
+        <div class="stat-footer">
+          <span class="badge-pill">This Month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents Card -->
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-card-orange">
+      <div class="stat-icon">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <div class="stat-content">
+        <h3 class="stat-number">0</h3>
+        <p class="stat-label">Documents</p>
+        <div class="stat-footer">
+          <span class="badge-pill">Uploaded</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Grid -->
 <div class="row g-4">
+  <!-- Left Column -->
+  <div class="col-lg-8">
+    <!-- Quick Actions -->
+    <div class="card-box mb-4">
+      <h5 class="mb-4"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <a href="{% url 'edit_lawyer_profile' %}" class="action-btn action-btn-primary">
+            <i class="fas fa-user-edit"></i>
+            <span>Update Profile</span>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="action-btn action-btn-success">
+            <i class="fas fa-calendar-plus"></i>
+            <span>New Appointment</span>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="action-btn action-btn-info">
+            <i class="fas fa-file-upload"></i>
+            <span>Upload Document</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
-  <!-- Profile Summary -->
-  <div class="col-md-4">
+    <!-- Recent Activity -->
     <div class="card-box">
-      <h5>Profile Status</h5>
-      <div class="mt-3">
-        <p class="mb-2"><i class="fas fa-user me-2 text-muted"></i> <strong>Name:</strong> {{ lawyer.full_name }}</p>
-        <p class="mb-2"><i class="fas fa-envelope me-2 text-muted"></i> <strong>Email:</strong> {{ lawyer.email }}</p>
-        <p class="mb-0"><i class="fas fa-phone me-2 text-muted"></i> <strong>Phone:</strong> {{ lawyer.phone }}</p>
+      <h5 class="mb-4"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+      <div class="activity-timeline">
+        <div class="activity-item">
+          <div class="activity-icon activity-icon-success">
+            <i class="fas fa-check"></i>
+          </div>
+          <div class="activity-content">
+            <h6 class="mb-1">Account Approved</h6>
+            <p class="text-muted mb-0">Your lawyer account has been successfully verified and approved</p>
+            <small class="text-muted"><i class="far fa-clock me-1"></i>Today</small>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon activity-icon-info">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="activity-content">
+            <h6 class="mb-1">Profile Created</h6>
+            <p class="text-muted mb-0">Welcome to the AI Lawyer Platform</p>
+            <small class="text-muted"><i class="far fa-clock me-1"></i>Recently</small>
+          </div>
+        </div>
+
+        <div class="activity-item activity-item-empty">
+          <div class="activity-icon activity-icon-muted">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="activity-content">
+            <p class="text-muted mb-0">No additional activity to display</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Appointments -->
-  <div class="col-md-4">
-    <div class="card-box">
-      <h5>Appointments</h5>
-      <div class="d-flex align-items-center justify-content-between mt-3">
-        <h2 class="display-4 text-primary-custom mb-0">0</h2>
-        <i class="fas fa-calendar-check fa-3x text-muted opacity-25"></i>
+  <!-- Right Column -->
+  <div class="col-lg-4">
+    <!-- Profile Summary -->
+    <div class="card-box mb-4">
+      <h5 class="mb-4"><i class="fas fa-id-card me-2"></i>Profile Summary</h5>
+      <div class="profile-info">
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="info-content">
+            <small class="text-muted">Full Name</small>
+            <p class="mb-0 fw-bold">{{ lawyer.first_name }}</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="info-content">
+            <small class="text-muted">Email Address</small>
+            <p class="mb-0 fw-bold">{{ lawyer.email }}</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="info-content">
+            <small class="text-muted">Phone Number</small>
+            <p class="mb-0 fw-bold">{{ lawyer.phone }}</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="info-content">
+            <small class="text-muted">Account Status</small>
+            <p class="mb-0">
+              <span class="badge bg-success">
+                <i class="fas fa-check-circle me-1"></i>Verified
+              </span>
+            </p>
+          </div>
+        </div>
       </div>
-      <p class="text-muted mt-2 mb-0">No appointments yet.</p>
     </div>
-  </div>
 
-  <!-- Notifications -->
-  <div class="col-md-4">
+    <!-- Upcoming Appointments -->
     <div class="card-box">
-      <h5>Notifications</h5>
-      <ul class="list-unstyled mt-3">
-        <li class="mb-3 d-flex align-items-start">
-          <i class="fas fa-check-circle text-success mt-1 me-2"></i>
-          <span>Your account has been approved</span>
-        </li>
-        <li class="text-muted d-flex align-items-start">
-          <i class="fas fa-info-circle mt-1 me-2"></i>
-          <span>No new updates.</span>
-        </li>
-      </ul>
+      <h5 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Upcoming Appointments</h5>
+      <div class="appointments-list">
+        <div class="empty-state">
+          <i class="fas fa-calendar-times"></i>
+          <p class="text-muted mb-0">No upcoming appointments</p>
+          <a href="#" class="btn btn-sm btn-primary-custom mt-3">
+            <i class="fas fa-plus me-1"></i>Schedule New
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-
 </div>
+
+<style>
+  /* Welcome Header */
+  .welcome-header {
+    background: linear-gradient(135deg, #364d59 0%, #2c3e48 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(54, 77, 89, 0.2);
+  }
+
+  .welcome-header h1 {
+    color: #fee2b3;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome-header .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .profile-badge .avatar-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fee2b3 0%, #ffd89b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #364d59;
+    box-shadow: 0 5px 15px rgba(254, 226, 179, 0.3);
+  }
+
+  /* Statistics Cards */
+  .stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--card-color-1), var(--card-color-2));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-card-blue {
+    --card-color-1: #4e73df;
+    --card-color-2: #224abe;
+  }
+
+  .stat-card-green {
+    --card-color-1: #1cc88a;
+    --card-color-2: #13855c;
+  }
+
+  .stat-card-purple {
+    --card-color-1: #6f42c1;
+    --card-color-2: #5a32a3;
+  }
+
+  .stat-card-orange {
+    --card-color-1: #f6c23e;
+    --card-color-2: #dda20a;
+  }
+
+  .stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .stat-card-blue .stat-icon {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    color: white;
+  }
+
+  .stat-card-green .stat-icon {
+    background: linear-gradient(135deg, #1cc88a, #13855c);
+    color: white;
+  }
+
+  .stat-card-purple .stat-icon {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    color: white;
+  }
+
+  .stat-card-orange .stat-icon {
+    background: linear-gradient(135deg, #f6c23e, #dda20a);
+    color: white;
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #364d59;
+    margin-bottom: 0.25rem;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .stat-label {
+    color: #6c757d;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-footer .badge-pill {
+    background: #f4f6f9;
+    color: #6c757d;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Quick Actions */
+  .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    color: white;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .action-btn i {
+    font-size: 2rem;
+  }
+
+  .action-btn span {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .action-btn-primary {
+    background: linear-gradient(135deg, #364d59, #2c3e48);
+  }
+
+  .action-btn-success {
+    background: linear-gradient(135deg, #1cc88a, #13855c);
+  }
+
+  .action-btn-info {
+    background: linear-gradient(135deg, #36b9cc, #258391);
+  }
+
+  .action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    color: white;
+  }
+
+  /* Activity Timeline */
+  .activity-timeline {
+    position: relative;
+  }
+
+  .activity-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .activity-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 45px;
+    width: 2px;
+    height: calc(100% - 20px);
+    background: #e9ecef;
+  }
+
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+    font-size: 0.9rem;
+    z-index: 1;
+    background: white;
+  }
+
+  .activity-icon-success {
+    background: linear-gradient(135deg, #1cc88a, #13855c);
+  }
+
+  .activity-icon-info {
+    background: linear-gradient(135deg, #36b9cc, #258391);
+  }
+
+  .activity-icon-muted {
+    background: #e9ecef;
+    color: #6c757d;
+  }
+
+  .activity-content h6 {
+    color: #364d59;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .activity-content p {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .activity-content small {
+    font-size: 0.8rem;
+  }
+
+  /* Profile Info */
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .info-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #364d59, #2c3e48);
+    color: #fee2b3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .info-content {
+    flex: 1;
+  }
+
+  .info-content small {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+  }
+
+  .info-content p {
+    font-size: 0.9rem;
+    color: #364d59;
+    word-break: break-word;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+    }
+
+    .welcome-header {
+      text-align: center;
+    }
+
+    .profile-badge {
+      margin-top: 1rem;
+    }
+  }
+</style>
 {% endblock %}
