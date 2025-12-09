@@ -14,9 +14,11 @@ class LawyerProfile(models.Model):
     fee_band = models.ForeignKey(FeeBand, on_delete=models.SET_NULL, null=True)
     experience_years = models.IntegerField(default=0)
 
+
     courts = models.ManyToManyField(Court)
     # languages = models.ManyToManyField(Language)
     practice_areas = models.ManyToManyField(SubCategory)
+    
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     verification_status = models.CharField(
         max_length=20,

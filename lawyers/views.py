@@ -112,6 +112,8 @@ def lawyer_profile_complete(request):
         lp.city_id = request.POST.get("city")
         lp.fee_band_id = request.POST.get("fee_band")
         lp.experience_years = request.POST.get("experience")
+        if request.FILES.get('profile_picture'):
+            lp.profile_picture = request.FILES['profile_picture']
         lp.verification_status = 'pending'
         
         lp.save()
@@ -125,6 +127,7 @@ def lawyer_profile_complete(request):
         lp.practice_areas.set(practice_ids)
 
         # Handle verification documents upload
+
         from lawyers.models import VerificationDocument
         files = request.FILES.getlist('verification_documents')
         for file in files:
@@ -139,9 +142,10 @@ def lawyer_profile_complete(request):
         #     verification_status='pending'
         # )
 
-        request.user.profile_completed = True
+        # request.user.profile_completed = True
         request.user.save()
         messages.success(request, "Profile completed successfully")
+        return redirect('lawyer_login')
 
 
 
@@ -263,6 +267,10 @@ def edit_lawyer_profile(request):
         lawyer_profile.city_id = request.POST.get("city")
         lawyer_profile.experience_years = request.POST.get("experience")
         lawyer_profile.fee_band_id = request.POST.get("fee_band")
+
+        # ========== PROFILE PICTURE ==========
+        if request.FILES.get('profile_picture'):
+            lawyer_profile.profile_picture = request.FILES['profile_picture']
 
         # ========== CHECKBOX MULTIPLE FIELDS ==========
         selected_courts = request.POST.getlist("courts")

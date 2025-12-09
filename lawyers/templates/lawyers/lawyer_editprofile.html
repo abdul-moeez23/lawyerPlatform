@@ -13,6 +13,30 @@
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
+    <!-- Profile Picture Section -->
+    <div class="card-box mb-4 text-center">
+        <div class="mb-3 position-relative d-inline-block">
+            <div class="avatar-upload">
+                <div class="avatar-preview">
+                    {% if lawyer.profile_picture %}
+                        <img id="imagePreview" src="{{ lawyer.profile_picture.url }}" alt="Profile Preview">
+                    {% else %}
+                        <div id="placeholderIcon" class="d-flex align-items-center justify-content-center h-100 bg-light text-muted">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                        <img id="imagePreview" src="" alt="Profile Preview" style="display: none;">
+                    {% endif %}
+                </div>
+                <div class="avatar-edit">
+                    <input type='file' id="imageUpload" name="profile_picture" accept=".png, .jpg, .jpeg" />
+                    <label for="imageUpload" class="btn-edit-img shadow-sm"><i class="fas fa-camera"></i></label>
+                </div>
+            </div>
+        </div>
+        <h5 class="mb-1">Profile Photo</h5>
+        <p class="text-muted small">Allowed files: JPG, JPEG, PNG</p>
+    </div>
+
     <!-- Personal Information -->
     <div class="card-box mb-4">
         <h5><i class="fas fa-user me-2"></i>Personal Information</h5>
@@ -177,5 +201,77 @@ document.getElementById('phone').addEventListener('input', function (e) {
     this.value = this.value.replace(/[^0-9+]/g, '');
 });
 </script>
+
+<style>
+    /* Avatar Upload Styles */
+    .avatar-upload {
+        position: relative;
+        max-width: 150px;
+        margin: 0 auto;
+    }
+
+    .avatar-preview {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        border-radius: 50%;
+        border: 4px solid #fee2b3;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-edit {
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        z-index: 1;
+    }
+
+    .avatar-edit input {
+        display: none;
+    }
+
+    .btn-edit-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #364d59;
+        color: #fee2b3;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        border: 2px solid white;
+    }
+
+    .btn-edit-img:hover {
+        background: #2c3e48;
+        transform: scale(1.1);
+    }
+</style>
+
+<script>
+    // Image Preview
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').setAttribute('src', e.target.result);
+                document.getElementById('imagePreview').style.display = 'block';
+                var placeholder = document.getElementById('placeholderIcon');
+                if(placeholder) placeholder.style.display = 'none';
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
 
 {% endblock %}

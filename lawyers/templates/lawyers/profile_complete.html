@@ -13,6 +13,27 @@
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    <!-- Profile Picture Upload -->
+<div class="card-box mb-4">
+    <h5><i class="fas fa-camera me-2"></i>Profile Picture</h5>
+
+    <div class="text-center mb-3">
+        <img id="previewImg" 
+             src="https://via.placeholder.com/120" 
+             class="rounded-circle border"
+             style="width: 120px; height: 120px; object-fit: cover;">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            <i class="fas fa-image text-muted me-2"></i>Select Profile Picture
+            <span class="text-danger">*</span>
+        </label>
+        <input type="file" class="form-control" name="profile_picture"
+               accept="image/*" onchange="previewFile(this)" required>
+        <small class="text-muted">Allowed formats: JPG, PNG. Maximum size 2MB.</small>
+    </div>
+</div>
 
     <!-- Basic Professional Information -->
     <div class="card-box mb-4">
@@ -62,8 +83,7 @@
                 <select class="form-select" name="fee_band" required>
                     <option value="">-- Select Fee Band --</option>
                     {% for band in fee_bands %}
-                    <option value="{{ band.id }}">{{ band.label }} (Rs {{ band.min_fee|floatformat:0 }} - Rs {{
-                        band.max_fee|floatformat:0 }})</option>
+                    <option value="{{ band.id }}">{{ band.label }} (Rs {{ band.min_fee}} - Rs {{ band.max_fee }})</option>
                     {% endfor %}
                 </select>
             </div>
@@ -92,6 +112,7 @@
 
     <!-- Languages -->
     <div class="card-box mb-4">
+        
         {% comment %} <h5><i class="fas fa-language me-2"></i>Languages</h5>
         <p class="text-muted small mb-3">Select all languages you can communicate in</p> {% endcomment %}
 
@@ -168,6 +189,19 @@
         </p>
     </div>
 </form>
+
+<script>
+function previewFile(input) {
+    let file = input.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("previewImg").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
 
 <style>
     .form-label {

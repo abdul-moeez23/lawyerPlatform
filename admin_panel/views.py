@@ -60,7 +60,7 @@ def approve_lawyer(request, id):
 
     lawyer.save()
     
-    messages.success(request, f"Lawyer {lawyer.user_id} ka profile approve ho gaya.")
+    messages.success(request, f"Lawyer {lawyer.user_id} ka profile approve ho gaya." ,extra_tags="admin_error")
     
     return redirect('admin_dashboard')
 
@@ -94,7 +94,7 @@ def manage_cities(request):
             name = request.POST.get("name")
             if name:
                 City.objects.create(name=name)
-                messages.success(request, f"City '{name}' added successfully!")
+                messages.success(request, f"City '{name}' added successfully!", extra_tags="admin_error")
         
         elif action == "edit":
             city_id = request.POST.get("city_id")
@@ -103,14 +103,14 @@ def manage_cities(request):
                 city = City.objects.get(id=city_id)
                 city.name = name
                 city.save()
-                messages.success(request, "City updated successfully!")
+                messages.success(request, "City updated successfully!" ,extra_tags="admin_error")
         
         elif action == "delete":
             city_id = request.POST.get("city_id")
             if city_id:
                 try:
                     City.objects.get(id=city_id).delete()
-                    messages.success(request, "City deleted successfully!")
+                    messages.success(request, "City deleted successfully!",extra_tags="admin_error")
                 except Exception as e:
                     messages.error(request, f"Cannot delete: {str(e)}")
         
@@ -130,7 +130,7 @@ def manage_courts(request):
             name = request.POST.get("name")
             if name:
                 Court.objects.create(name=name)
-                messages.success(request, f"Court '{name}' added successfully!")
+                messages.success(request, f"Court '{name}' added successfully!",extra_tags="admin_error")
         
         elif action == "edit":
             court_id = request.POST.get("court_id")
@@ -139,14 +139,14 @@ def manage_courts(request):
                 court = Court.objects.get(id=court_id)
                 court.name = name
                 court.save()
-                messages.success(request, "Court updated successfully!")
+                messages.success(request, "Court updated successfully!",extra_tags="admin_error")
         
         elif action == "delete":
             court_id = request.POST.get("court_id")
             if court_id:
                 try:
                     Court.objects.get(id=court_id).delete()
-                    messages.success(request, "Court deleted successfully!")
+                    messages.success(request, "Court deleted successfully!",extra_tags="admin_error")
                 except Exception as e:
                     messages.error(request, f"Cannot delete: {str(e)}")
         
@@ -167,7 +167,7 @@ def manage_practice_areas(request):
             name = request.POST.get("category_name")
             if name:
                 Category.objects.create(name=name)
-                messages.success(request, f"Category '{name}' added successfully!")
+                messages.success(request, f"Category '{name}' added successfully!",extra_tags="admin_error")
         
         elif action == "add":
             name = request.POST.get("name")
@@ -175,7 +175,7 @@ def manage_practice_areas(request):
             if name and category_id:
                 category = Category.objects.get(id=category_id)
                 SubCategory.objects.create(name=name, category=category)
-                messages.success(request, f"Practice area '{name}' added successfully!")
+                messages.success(request, f"Practice area '{name}' added successfully!",extra_tags="admin_error")
         
         elif action == "edit":
             area_id = request.POST.get("area_id")
@@ -186,14 +186,14 @@ def manage_practice_areas(request):
                 area.name = name
                 area.category_id = category_id
                 area.save()
-                messages.success(request, "Practice area updated successfully!")
+                messages.success(request, "Practice area updated successfully!",extra_tags="admin_error")
         
         elif action == "delete":
             area_id = request.POST.get("area_id")
             if area_id:
                 try:
                     SubCategory.objects.get(id=area_id).delete()
-                    messages.success(request, "Practice area deleted successfully!")
+                    messages.success(request, "Practice area deleted successfully!",extra_tags="admin_error")
                 except Exception as e:
                     messages.error(request, f"Cannot delete: {str(e)}")
         
@@ -225,7 +225,7 @@ def manage_fee_bands(request):
                     min_fee=int(min_fee),
                     max_fee=int(max_fee)
                 )
-                messages.success(request, f"Fee band '{label}' added successfully!")
+                messages.success(request, f"Fee band '{label}' added successfully!",extra_tags="admin_error")
         
         elif action == "edit":
             band_id = request.POST.get("band_id")
@@ -238,14 +238,14 @@ def manage_fee_bands(request):
                 band.min_fee = int(min_fee)
                 band.max_fee = int(max_fee)
                 band.save()
-                messages.success(request, "Fee band updated successfully!")
+                messages.success(request, "Fee band updated successfully!",extra_tags="admin_error")
         
         elif action == "delete":
             band_id = request.POST.get("band_id")
             if band_id:
                 try:
                     FeeBand.objects.get(id=band_id).delete()
-                    messages.success(request, "Fee band deleted successfully!")
+                    messages.success(request, "Fee band deleted successfully!",extra_tags="admin_error")
                 except Exception as e:
                     messages.error(request, f"Cannot delete: {str(e)}")
         
