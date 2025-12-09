@@ -17,12 +17,14 @@ class LawyerProfile(models.Model):
     courts = models.ManyToManyField(Court)
     # languages = models.ManyToManyField(Language)
     practice_areas = models.ManyToManyField(SubCategory)
-
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     verification_status = models.CharField(
         max_length=20,
         choices=(('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')),
         default='pending'
     )
+
+
 
     # embedding = ArrayField(models.FloatField(), blank=True, null=True)  # AI embedding
 
@@ -60,3 +62,5 @@ class VerificationDocument(models.Model):
     uploaded_at = models.DateTimeField(default=timezone.now)
 
     admin_comment = models.TextField(blank=True, null=True)
+
+

@@ -37,42 +37,6 @@ def admin_dashboard(request):
 
 
 
-# def admin_login(request):
-#     if request.method == 'POST':
-#         email = request.POST['email']
-#         password = request.POST['password']
-
-#         # Django built-in authentication uses username, so agar email use kar rahe ho:
-#         try:
-#             user = User.objects.get(email=email)
-#             user = authenticate(request, username=user.username, password=password)
-#         except User.DoesNotExist:
-#             user = None
-
-#         if user is not None and user.is_staff:  # check if user is admin/staff
-#             login(request, user)
-#             return redirect('admin_dashboard')
-#         else:
-#             messages.error(request, "Invalid credentials or not an admin!")
-#             return redirect('admin_login')
-
-#     return render(request, 'admin_panel/login.html')
-
-
-
-
-# @login_required
-# def admin_dashboard(request):
-#     total_lawyers = Lawyer.objects.count()
-#     pending_requests = LawyerRequest.objects.count()
-
-#     context = {
-#         'total_lawyers': total_lawyers,
-#         'pending_requests': pending_requests
-#     }
-#     return render(request, 'admin_panel/dashboard.html', context)
-
-
 
 def admin_logout(request):
     logout(request)
@@ -105,6 +69,16 @@ def approved_lawyers(request):
     approved_lawyers=LawyerProfile.objects.filter(verification_status='approved').order_by('-user__date_joined')
     return render(request,'admin_panel/approved_lawyers.html',{'lawyers':approved_lawyers})
 
+
+
+def reject_lawyer(request, id):
+    lawyer = get_object_or_404(LawyerProfile, id=id)
+
+    lawyer.verification_status = 'rejected'
+
+    lawyer.save()
+    # messages.success(request, f"Lawyer {lawyer.user_id} ka profile reject ho gaya.")
+    return redirect('admin_dashboard')
 
 # =========================
 # DATA MANAGEMENT VIEWS

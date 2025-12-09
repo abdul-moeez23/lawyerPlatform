@@ -33,7 +33,7 @@ def lawyer_login(request):
             return redirect("lawyer_login")
 
         if user.role != "lawyer":
-            messages.error(request, "This account is not registered as a lawyer")
+            messages.error(request, "This account is not registered as a lawyer",extra_tags="auto")
             return redirect("lawyer_login")
 
         # verification check
@@ -58,6 +58,9 @@ def lawyer_login(request):
             print("Verified")   
             login(request, user)
             return redirect("lawyer_dashboard")
+        if lp.verification_status == '':
+            login(request, user)
+            return redirect("lawyer_dashboard")
 
     return render(request, "lawyers/login.html")
 
@@ -72,7 +75,7 @@ def lawyer_signup(request):
         password = request.POST.get("password")
 
         # Check existing user
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(username=email).exists():
             messages.error(request, "Email already exists")
             return redirect("lawyer_signup")
 
@@ -92,7 +95,7 @@ def lawyer_signup(request):
             verification_status=''
         )
 
-        messages.success(request, "Signup successful. Admin will verify your account")
+        messages.success(request, "Signup successful. Admin will verify your account",extra_tags='auto')
         login(request, user)
         return redirect("lawyer_profile_complete")
 

@@ -23,7 +23,7 @@
                     <th>Bar</th>
                     
                     {% comment %} <th>Past Matters</th> {% endcomment %}
-                    {% comment %} <th>Documents</th> {% endcomment %}
+                    <th>Documents</th>
                     {% comment %} <th>Action</th> {% endcomment %}
                 </tr>
             </thead>
@@ -61,19 +61,21 @@
                     <td>{{ lawyer.bar_enrollment|default:"N/A" }}</td>
 
                     
-                    <td>
-                        {{ lawyer.past_matters.count }}
-                    </td>
-
                     {% comment %} <td>
-                        {% if lawyer.documents %}
-                        <a href="{{ lawyer.documents.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-file-alt"></i> View
-                        </a>
-                        {% else %}
-                        <span class="text-muted small">N/A</span>
-                        {% endif %}
+                        {{ lawyer.past_matters.count }}
                     </td> {% endcomment %}
+
+                    <td>
+                        {% if lawyer.verificationdocument_set.all %}
+                            {% for doc in lawyer.verificationdocument_set.all %}
+                                <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary mb-1">
+                                    <i class="fas fa-file-alt"></i> View {{ forloop.counter }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted small">N/A</span>
+                        {% endif %}
+                    </td>
 
                     <!-- Action Buttons -->
 

@@ -370,6 +370,16 @@
                     <h2>Welcome Back</h2>
                     <p>Sign in to access the admin dashboard</p>
                 </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if 'admin_error'  in message.tags %}
+                            <div class="{% if 'error' in message.tags %}error-message{% else %}success-message{% endif %}"
+                                {% if 'auto' in message.tags %}data-temporary="true"{% endif %}>
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
 
                 <form method="POST">
                     {% csrf_token %}
@@ -410,6 +420,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tempMessages = document.querySelectorAll('[data-temporary="true"]');
+
+            tempMessages.forEach(msg => {
+                setTimeout(() => {
+                    msg.style.transition = "opacity 0.5s";
+                    msg.style.opacity = "0";
+
+                    setTimeout(() => msg.remove(), 500);
+                }, 3000); // 3 seconds after message appears
+            });
+        });
+    </script>
+
+
 </body>
 
 </html>

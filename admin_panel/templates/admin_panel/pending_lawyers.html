@@ -1,3 +1,4 @@
+
 {% extends "base_admin.html" %}
 
 {% block title %}Pending Lawyer Requests{% endblock %}
@@ -80,6 +81,9 @@
                     <td>
                         <a href="{% url 'approve_lawyer' r.id %}" class="btn btn-success btn-sm mb-1">
                             <i class="fas fa-check"></i> Approve
+                        </a>
+                        <a href="{% url 'reject_lawyer' r.id %}" class="btn btn-success btn-sm mb-1">
+                            <i class="fas fa-check"></i> Reject
                         </a>
                     </td>
                 </tr>
