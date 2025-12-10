@@ -10,12 +10,6 @@ from lawyers.models import VerificationDocument
 
 
 
-# def lawyer_login(request):
-#     return render(request, 'lawyers/login.html')
-
-# def lawyer_signup(request):
-#     return render(request, 'lawyers/signup.html')
-
 
 
 

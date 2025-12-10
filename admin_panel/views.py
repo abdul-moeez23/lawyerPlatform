@@ -9,6 +9,7 @@ from lawyers.models import LawyerProfile
 
 
 
+
 # @login_required
 def admin_login(request):
     if request.method == "POST":
@@ -22,6 +23,7 @@ def admin_login(request):
             messages.error(request, "Invalid credentials or not admin", extra_tags="admin_error")
     return render(request, "admin_panel/login.html")
 
+# @login_required(login_url='admin_login')
 def admin_dashboard(request):
     total_lawyers = LawyerProfile.objects.count()  # total lawyers
     verified_lawyers = LawyerProfile.objects.filter(verification_status='approved').count()  # verified only
