@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.views.decorators.cache import never_cache
 from lawyers.models import LawyerProfile
 # # from lawyers.models import LawyerRequest,Lawyer
 
@@ -23,7 +24,8 @@ def admin_login(request):
             messages.error(request, "Invalid credentials or not admin", extra_tags="admin_error")
     return render(request, "admin_panel/login.html")
 
-# @login_required(login_url='admin_login')
+@login_required(login_url='admin_login')
+@never_cache
 def admin_dashboard(request):
     total_lawyers = LawyerProfile.objects.count()  # total lawyers
     verified_lawyers = LawyerProfile.objects.filter(verification_status='approved').count()  # verified only
@@ -47,12 +49,16 @@ def admin_logout(request):
 
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def pending_lawyer_requests(request):
     # Fetch only pending verification lawyers
     pending_requests = LawyerProfile.objects.filter(verification_status='pending').order_by('-user__date_joined')
     return render(request, 'admin_panel/pending_lawyers.html', {'requests': pending_requests})
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def approve_lawyer(request, id):
 
     lawyer = get_object_or_404(LawyerProfile, id=id)
@@ -67,12 +73,16 @@ def approve_lawyer(request, id):
     return redirect('admin_dashboard')
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def approved_lawyers(request):
     approved_lawyers=LawyerProfile.objects.filter(verification_status='approved').order_by('-user__date_joined')
     return render(request,'admin_panel/approved_lawyers.html',{'lawyers':approved_lawyers})
 
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def reject_lawyer(request, id):
     lawyer = get_object_or_404(LawyerProfile, id=id)
 
@@ -86,6 +96,8 @@ def reject_lawyer(request, id):
 # DATA MANAGEMENT VIEWS
 # =========================
 
+@login_required(login_url='admin_login')
+@never_cache
 def manage_cities(request):
     from users.models import City
     
@@ -122,6 +134,8 @@ def manage_cities(request):
     return render(request, 'admin_panel/manage_cities.html', {'cities': cities})
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def manage_courts(request):
     from users.models import Court
     
@@ -159,6 +173,8 @@ def manage_courts(request):
 
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def manage_practice_areas(request):
     from users.models import Category, SubCategory
     
@@ -211,6 +227,8 @@ def manage_practice_areas(request):
     return render(request, 'admin_panel/manage_practice_areas.html', context)
 
 
+@login_required(login_url='admin_login')
+@never_cache
 def manage_fee_bands(request):
     from users.models import FeeBand
     

@@ -7,9 +7,7 @@ from lawyers.models import LawyerProfile
 from django.contrib.auth.hashers import make_password,check_password
 from users.models import User,City, Court, Language, FeeBand,SubCategory
 from lawyers.models import VerificationDocument
-
-
-
+from django.views.decorators.cache import never_cache
 
 
 
@@ -97,6 +95,8 @@ def lawyer_signup(request):
 
 
 
+@login_required(login_url='lawyer_login')
+@never_cache
 def lawyer_profile_complete(request):
     if request.method == "POST":
 
@@ -156,16 +156,21 @@ def lawyer_profile_complete(request):
     return render(request, "lawyers/profile_complete.html", context)
 
 
+@login_required(login_url='lawyer_login')
+@never_cache
 def waiting_verification(request):
     return render(request, "lawyers/waiting.html")
 
 @login_required(login_url='/lawyer/lawyer-login/')
+@never_cache
 def lawyer_dashboard(request):
     
     lawyer = request.user  # session se automatic fetch
     return render(request, 'lawyers/lawyer_dashboard.html', {'lawyer': lawyer})
 
 
+@login_required(login_url='/lawyer/lawyer-login/')
+@never_cache
 def lawyer_profile(request):
     # lawyer = request.user
     lawyer_profile = get_object_or_404(LawyerProfile, user=request.user)
@@ -245,6 +250,7 @@ def lawyer_profile(request):
 #     return render(request,'lawyers/lawyer_editprofile.html')
 
 @login_required(login_url='/lawyer/lawyer-login/')
+@never_cache
 def edit_lawyer_profile(request):
 
     user = request.user
@@ -318,6 +324,7 @@ def edit_lawyer_profile(request):
 # # @login_required(login_url='/login/')
 
 @login_required(login_url='/lawyer/lawyer-login/')
+@never_cache
 def lawyer_change_password(request):
 
     lawyer = request.user   # login user (session se auto ata ha)
