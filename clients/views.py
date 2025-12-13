@@ -9,7 +9,7 @@ def search_lawyers(request):
     practice_area = request.GET.get('practice_area')
     city = request.GET.get('city')
 
-    lawyers = LawyerProfile.objects.all()
+    lawyers = LawyerProfile.objects.filter(verification_status='approved')
     if practice_area:
         lawyers = lawyers.filter(practice_areas__name__icontains=practice_area)
     if city:

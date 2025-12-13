@@ -68,6 +68,11 @@ def approve_lawyer(request, id):
 
     lawyer.save()
     
+    # Clean up notifications related to this lawyer request
+    from users.models import Notification
+    # Delete notifications where the link contains this lawyer's ID
+    Notification.objects.filter(link__contains=f"highlight_id={id}").delete()
+    
     messages.success(request, f"Lawyer {lawyer.user_id} ka profile approve ho gaya." ,extra_tags="admin_error")
     
     return redirect('admin_dashboard')
@@ -89,6 +94,11 @@ def reject_lawyer(request, id):
     lawyer.verification_status = 'rejected'
 
     lawyer.save()
+    
+    # Clean up notifications related to this lawyer request
+    from users.models import Notification
+    Notification.objects.filter(link__contains=f"highlight_id={id}").delete()
+    
     # messages.success(request, f"Lawyer {lawyer.user_id} ka profile reject ho gaya.")
     return redirect('admin_dashboard')
 
@@ -273,3 +283,61 @@ def manage_fee_bands(request):
     
     fee_bands = FeeBand.objects.all().order_by('min_fee')
     return render(request, 'admin_panel/manage_fee_bands.html', {'fee_bands': fee_bands})
+
+
+@login_required(login_url='admin_login')
+@never_cache
+def mark_notification_read(request, id):
+    from users.models import Notification
+    
+    notification = get_object_or_404(Notification, id=id)
+    
+    # Ensure the user can only read their own notifications
+    if notification.recipient == request.user:
+        notification.is_read = True
+        notification.save()
+        
+        # Redirect to the link if it exists
+        if notification.link:
+            target_link = notification.link
+            
+            # PATCH 1: Fix legacy broken links
+            if target_link.startswith('/admin_panel/'):
+                target_link = target_link.replace('/admin_panel/', '/myadmin/', 1)
+            
+            # PATCH 2: Retroactive Highlighting for old/legacy notifications
+            # If 'highlight_id' is NOT in URL but we are going to pending lawyers, try to find the ID.
+            if 'pending-lawyers' in target_link and 'highlight_id' not in target_link:
+                import re
+                from users.models import User
+                # Try to extract email from message: "Request from Name (email@example.com)" or similar
+                # Simple regex for email extraction
+                email_match = re.search(r'[\w\.-]+@[\w\.-]+', notification.message)
+                if email_match:
+                    email = email_match.group(0)
+                    try:
+                        user = User.objects.filter(email=email).first()
+                        if user and hasattr(user, 'lawyer_profile'):
+                            target_link += f"?highlight_id={user.lawyer_profile.id}"
+                    except Exception:
+                        pass # Fail silently
+                
+                # FALLBACK FOR VERY OLD NOTIFICATIONS (Name Only)
+                # "Lawyer {name} has registered..."
+                else:
+                    name_match = re.search(r'Lawyer (.+) has registered', notification.message)
+                    if name_match:
+                        name_part = name_match.group(1).strip()
+                        # Try to find user by first name (best effort)
+                        try:
+                            # This matches the creation logic: message=f"Lawyer {request.user.first_name}..."
+                            user = User.objects.filter(first_name__iexact=name_part).first()
+                            if user and hasattr(user, 'lawyer_profile'):
+                                target_link += f"?highlight_id={user.lawyer_profile.id}"
+                        except Exception:
+                            pass
+
+            return redirect(target_link)
+            
+    # Default fallback
+    return redirect('admin_dashboard')

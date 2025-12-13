@@ -26,8 +26,12 @@
 
             <tbody>
                 {% for r in requests %}
-                <tr>
-                    <td>
+                <tr id="row-{{ r.id }}" 
+                    class="{% if request.GET.highlight_id|add:'0' == r.id %}highlight-row{% endif %}"
+                    {% if request.GET.highlight_id|add:'0' == r.id %}
+                    style="background-color: #e0f2fe !important;"
+                    {% endif %}>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <div class="avatar-cell">
                         {% if r.profile_picture %}
                             <img src="{{ r.profile_picture.url }}" alt="Profile" class="rounded-circle">
@@ -38,26 +42,26 @@
                         {% endif %}
                         </div>
                     </td>
-                    <td>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-dark">{{ r.user.get_full_name|default:r.user.username }}</span>
                             <span class="text-muted small">{{ r.user.email }}</span>
                             <span class="text-xs text-muted"><i class="fas fa-phone me-1"></i>{{ r.user.phone }}</span>
                         </div>
                     </td>
-                    <td>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <div class="d-flex flex-column">
                             <span class="fw-medium text-dark">{{ r.city.name }}</span>
                             <span class="text-muted small">Bar: {{ r.bar_enrollment }}</span>
                         </div>
                     </td>
-                    <td>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <span class="badge bg-info text-dark">{{ r.experience_years }} Years</span>
                     </td>
-                    <td>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <span class="badge bg-light text-dark border">Rs {{ r.fee_band.min_fee }} - {{ r.fee_band.max_fee }}</span>
                     </td>
-                    <td style="max-width: 250px;">
+                    <td style="max-width: 250px;" {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <div class="mb-1">
                             <small class="text-muted d-block mb-1">Practice Areas:</small>
                             <div class="d-flex flex-wrap gap-1">
@@ -81,7 +85,7 @@
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         {% if r.verificationdocument_set.exists %}
                         <div class="d-flex flex-column gap-1">
                             {% for doc in r.verificationdocument_set.all %}
@@ -95,7 +99,7 @@
                         {% endif %}
                     </td>
 
-                    <td class="text-end">
+                    <td class="text-end" {% if request.GET.highlight_id|add:'0' == r.id %}style="background-color: #e0f2fe !important;"{% endif %}>
                         <div class="d-flex flex-column gap-2 align-items-end">
                             <a href="{% url 'approve_lawyer' r.id %}" class="btn btn-success btn-sm w-100 justify-content-center">
                                 <i class="fas fa-check me-1"></i> Approve
@@ -137,10 +141,19 @@
         height: 100%;
         object-fit: cover;
     }
+
+    /* Highlighted Row */
+    .highlight-row,
+    .highlight-row > td {
+        background-color: #e0f2fe !important; /* Slightly darker blue (Blue-100) */
+        transition: background-color 1.5s ease;
+    }
+
     
     /* Typography */
     .text-xs {
         font-size: 0.75rem;
+
     }
     .btn-xs {
         padding: 0.2rem 0.5rem;
@@ -225,6 +238,35 @@
         margin-bottom: 0;
         padding-bottom: 0;
     }
+    .tooltip-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const highlightId = urlParams.get('highlight_id');
+        
+        if (highlightId) {
+            const row = document.getElementById('row-' + highlightId);
+            if (row) {
+                // Auto-scroll
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Force styling via JS as fallback
+                row.style.backgroundColor = '#e0f2fe';
+                
+                // Apply to children cells as well due to potential Bootstrap overwrites
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    cell.style.setProperty('background-color', '#e0f2fe', 'important');
+                });
+            }
+        }
+    });
+</script>
 
 {% endblock %}

@@ -207,6 +207,154 @@
             color: var(--text-dark);
         }
 
+        /* ===== NOTIFICATIONS ===== */
+        .notification-wrapper {
+            position: relative;
+            margin-right: 1.5rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary-blue);
+            background: var(--bg-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.15rem 0.35rem;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        .notification-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .notification-dropdown::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .notification-dropdown::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .notification-dropdown::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .notification-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Unread Styling */
+        .dropdown-item.unread {
+            background: #eff6ff;
+        }
+        .dropdown-item.unread:hover {
+            background: #dbv4ff; /* slightly darker on hover */
+        }
+
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--primary-navy);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-item {
+            padding: 1rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--bg-light);
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-light);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .notif-icon-circle {
+            width: 32px;
+            height: 32px;
+            background: #e0f2fe;
+            color: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .notif-content h6 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .notif-content p {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .notif-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
         /* ===== CONTENT AREA ===== */
         .content-area {
             padding: 2rem;
@@ -435,6 +583,43 @@
                 <h1>{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
             <div class="topbar-user">
+                <!-- Notification Icon -->
+                <div class="notification-wrapper">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        {% if unread_notification_count > 0 %}
+                        <span class="notification-badge">{{ unread_notification_count }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Dropdown -->
+                    <div class="notification-dropdown">
+                        <div class="dropdown-header">
+                            <span>Notifications</span>
+                            <span class="badge bg-light text-dark" style="font-size: 0.7rem;">{{ unread_notification_count|default:"0" }} New</span>
+                        </div>
+                        
+                        {% if latest_notifications %}
+                            {% for notif in latest_notifications %}
+                            <a href="{% url 'mark_notification_read' notif.id %}" class="dropdown-item {% if not notif.is_read %}unread{% endif %}">
+                                <div class="notif-icon-circle" style="{% if notif.is_read %}background: #f3f4f6; color: #9ca3af;{% endif %}">
+                                    <i class="fas {% if 'Request' in notif.title %}fa-user-clock{% elif 'Approved' in notif.title %}fa-check-circle{% else %}fa-info{% endif %}"></i>
+                                </div>
+                                <div class="notif-content">
+                                    <h6 class="{% if not notif.is_read %}fw-bold text-dark{% else %}text-muted{% endif %}">{{ notif.title }}</h6>
+                                    <p>{{ notif.message|truncatechars:45 }}</p>
+                                    <span class="notif-time">{{ notif.created_at|timesince }} ago</span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="dropdown-item" style="justify-content: center; color: var(--text-gray);">
+                                <small>No new notifications</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
                 </div>
@@ -451,6 +636,30 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifIcon = document.querySelector('.notification-icon');
+            const dropdown = document.querySelector('.notification-dropdown');
+
+            // Toggle dropdown on click
+            notifIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target) && !notifIcon.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            // Prevent dropdown from closing when clicking inside it
+            dropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 

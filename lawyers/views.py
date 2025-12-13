@@ -8,6 +8,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from users.models import User,City, Court, Language, FeeBand,SubCategory
 from lawyers.models import VerificationDocument
 from django.views.decorators.cache import never_cache
+from lawyers.utils import notify_admin
 
 
 
@@ -138,6 +139,15 @@ def lawyer_profile_complete(request):
 
         # request.user.profile_completed = True
         request.user.save()
+
+        from django.urls import reverse
+        # Notify Admin (In-App Only)
+        notify_admin(
+            title="New Lawyer Request",
+            message=f"Request from {request.user.first_name} ({request.user.email})",
+            link=reverse('pending_lawyer_requests') + f"?highlight_id={lp.id}"
+        )
+
         messages.success(request, "Profile completed successfully")
         return redirect('lawyer_login')
 

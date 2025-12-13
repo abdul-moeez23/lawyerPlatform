@@ -18,5 +18,8 @@ urlpatterns = [
     path('manage-courts/', views.manage_courts, name='manage_courts'),
     path('manage-practice-areas/', views.manage_practice_areas, name='manage_practice_areas'),
     path('manage-fee-bands/', views.manage_fee_bands, name='manage_fee_bands'),
+    
+    # Notifications
+    path('notifications/read/<int:id>/', views.mark_notification_read, name='mark_notification_read'),
 ]
 
