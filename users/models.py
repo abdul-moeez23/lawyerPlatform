@@ -9,6 +9,11 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     phone = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Verification
+    is_email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=200, blank=True, null=True)
+
 
 
 # =========================

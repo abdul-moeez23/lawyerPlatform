@@ -29,6 +29,7 @@ def notify_admin(title, message, link=None):
         create_notification(admin, title, message, link)
         print(f"--- Notification created for {admin.username} ---")
 
+
 # def send_html_email(subject, template_name, context, recipient_list):
 #     """
 #     Sends a professional HTML email using a template.

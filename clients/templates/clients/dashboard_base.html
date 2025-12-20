@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Client Dashboard - Lawgorithm{% endblock %}</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --accent-gold: #c9a961;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+            --text-dark: #334155;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-navy);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-gold);
+            color: var(--primary-navy);
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile-sm {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.75rem;
+            color: var(--primary-navy);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-navy);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #243a5e;
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary-navy);
+            color: var(--primary-navy);
+        }
+
+        /* Components */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-draft { background: #e2e8f0; color: #475569; }
+        .badge-submitted { background: #dbeafe; color: #1e40af; }
+        .badge-matched { background: #fef3c7; color: #92400e; }
+        .badge-hired { background: #dcfce7; color: #166534; }
+        .badge-closed { background: #fee2e2; color: #991b1b; }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 80px; padding: 2rem 1rem; }
+            .nav-link span, .brand-logo span, .user-info { display: none; }
+            .main-content { margin-left: 80px; padding: 1.5rem; }
+            .nav-link { justify-content: center; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <a href="{% url 'client_dashboard' %}" class="brand-logo">
+            <i class="fas fa-scale-balanced"></i>
+            <span>Lawgorithm</span>
+        </a>
+
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="{% url 'client_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'client_dashboard' %}active{% endif %}">
+                    <i class="fas fa-grid-2"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'my_cases' %}" class="nav-link {% if request.resolver_match.url_name == 'my_cases' %}active{% endif %}">
+                    <i class="fas fa-briefcase"></i>
+                    <span>My Cases</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'search_lawyers' %}" class="nav-link {% if request.resolver_match.url_name == 'search_lawyers' %}active{% endif %}">
+                    <i class="fas fa-search"></i>
+                    <span>Find Lawyers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'client_profile' %}" class="nav-link {% if request.resolver_match.url_name == 'client_profile' %}active{% endif %}">
+                    <i class="fas fa-user-gear"></i>
+                    <span>Profile & Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-profile-sm">
+            <div class="avatar">
+                {{ user.username|make_list|first|upper }}
+            </div>
+            <div class="user-info">
+                <h4>{{ user.first_name|default:user.username }}</h4>
+                <p>Client Account</p>
+                <a href="{% url 'signin' %}" style="color: #94a3b8; font-size: 0.8rem; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="page-title">
+                <h1>{% block header_title %}Overview{% endblock %}</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn-outline">
+                    <i class="far fa-bell"></i>
+                </button>
+                {% block actions %}{% endblock %}
+            </div>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="card" style="background: {% if 'error' in message.tags %}#fee2e2{% else %}#dcfce7{% endif %}; color: inherit;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Common scripts
+    </script>
+</body>
+</html>

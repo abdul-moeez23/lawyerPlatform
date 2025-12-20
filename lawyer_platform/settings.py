@@ -141,3 +141,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/myadmin/'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# YOU MUST REPLACE THESE WITH YOUR ACTUAL GMAIL CREDENTIALS
+EMAIL_HOST_USER = 'moeeziftikhar2003@gmail.com' 
+EMAIL_HOST_PASSWORD = 'hksaeckduvmpgxls' 
+DEFAULT_FROM_EMAIL = 'Lawyer Platform <noreply@lawyerplatform.com>'
+

@@ -641,23 +641,57 @@
             const notifIcon = document.querySelector('.notification-icon');
             const dropdown = document.querySelector('.notification-dropdown');
 
-            // Toggle dropdown on click
+            // 1. Toggle dropdown on click (Standard User Logic)
             notifIcon.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropdown.classList.toggle('show');
             });
 
-            // Close dropdown when clicking outside
+            // 2. Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
                 if (!dropdown.contains(e.target) && !notifIcon.contains(e.target)) {
                     dropdown.classList.remove('show');
                 }
             });
 
-            // Prevent dropdown from closing when clicking inside it
+            // 3. Prevent dropdown close on inside click
             dropdown.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
+
+            // ==========================================
+            // REAL-TIME UPDATES (Server-Sent Events)
+            // ==========================================
+            const eventSource = new EventSource("{% url 'stream_notifications' %}");
+
+            eventSource.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                
+                // A. Update Badge
+                const badgeContainer = document.querySelector('.notification-icon');
+                let badge = badgeContainer.querySelector('.notification-badge');
+                
+                if (data.unread_count > 0) {
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'notification-badge';
+                        badgeContainer.appendChild(badge);
+                    }
+                    badge.innerText = data.unread_count;
+                } else {
+                    if (badge) badge.remove();
+                }
+
+                // B. Update List Content
+                const dropdown = document.querySelector('.notification-dropdown');
+                dropdown.innerHTML = data.html;
+            };
+
+            eventSource.onerror = function(e) {
+                console.error("SSE Error:", e);
+                // Optional: Close connection on error to prevent heavy retry
+                // eventSource.close();
+            };
         });
     </script>
     {% block extra_js %}{% endblock %}

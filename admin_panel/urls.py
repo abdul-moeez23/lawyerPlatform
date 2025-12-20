@@ -20,6 +20,7 @@ urlpatterns = [
     path('manage-fee-bands/', views.manage_fee_bands, name='manage_fee_bands'),
     
     # Notifications
+    path('api/notifications-stream/', views.stream_notifications, name='stream_notifications'),
     path('notifications/read/<int:id>/', views.mark_notification_read, name='mark_notification_read'),
 ]
 

@@ -80,6 +80,8 @@ def lawyer_signup(request):
             phone=phone,
             role='lawyer',
             password=make_password(password),
+            is_active=False, # Wait for verification
+            is_email_verified=False
         )
 
         # Create empty lawyer profile
@@ -87,10 +89,14 @@ def lawyer_signup(request):
             user=user,
             verification_status=''
         )
+        
+        from users.utils import send_verification_email
+        send_verification_email(request, user)
 
-        messages.success(request, "Signup successful. Admin will verify your account",extra_tags='auto')
-        login(request, user)
-        return redirect("lawyer_profile_complete")
+        messages.success(request, "Signup successful. Please check your email to verify your account.", extra_tags='auto')
+        # login(request, user) # Don't login yet
+        return redirect("verification_sent")
+
 
     return render(request, "lawyers/signup.html")
 
@@ -164,6 +170,7 @@ def lawyer_profile_complete(request):
     }
     
     return render(request, "lawyers/profile_complete.html", context)
+
 
 
 @login_required(login_url='lawyer_login')

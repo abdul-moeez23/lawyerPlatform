@@ -1,0 +1,112 @@
+{% extends 'clients/dashboard_base.html' %}
+
+{% block title %}Dashboard - Lawgorithm{% endblock %}
+{% block header_title %}Welcome back, {{ user.first_name|default:'Client' }}{% endblock %}
+
+{% block actions %}
+    <a href="#" class="btn-primary">
+        <i class="fas fa-plus"></i> Post New Case
+    </a>
+{% endblock %}
+
+{% block content %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .bg-blue { background: #ebf5ff; color: #1c64f2; }
+    .bg-green { background: #f0fdf4; color: #16a34a; }
+    .bg-purple { background: #f3e8ff; color: #9333ea; }
+
+    .stat-info h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-navy);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-info p {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon bg-blue">
+            <i class="fas fa-folder-open"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ active_cases }}</h3>
+            <p>Active Cases</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon bg-green">
+            <i class="fas fa-gavel"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ hired_count }}</h3>
+            <p>Hired Lawyers</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon bg-purple">
+            <i class="fas fa-file-contract"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ total_cases }}</h3>
+            <p>Total Cases</p>
+        </div>
+    </div>
+</div>
+
+<div class="recent-activity">
+    <h3 style="margin-bottom: 1.5rem; color: var(--primary-navy);">Recent Activity</h3>
+    {% if recent_cases %}
+        {% for case in recent_cases %}
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="margin-bottom: 0.5rem;">{{ case.title }}</h4>
+                <div style="font-size: 0.85rem; color: var(--text-gray);">
+                    <i class="far fa-clock"></i> Updated {{ case.updated_at|timesince }} ago
+                </div>
+            </div>
+            <span class="badge badge-{{ case.status }}">{{ case.get_status_display }}</span>
+            <a href="{% url 'case_detail' case.id %}" class="btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">View</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="color: #cbd5e1; font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-clipboard-list"></i></div>
+            <p>No activity yet. Start by posting your first legal case!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

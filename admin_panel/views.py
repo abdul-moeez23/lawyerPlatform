@@ -40,6 +40,57 @@ def admin_dashboard(request):
     return render(request, 'admin_panel/dashboard.html', context)
 
 
+@login_required(login_url='admin_login')
+@never_cache
+def stream_notifications(request):
+    """
+    Server-Sent Events (SSE) stream for real-time notifications.
+    Keeps connection open and pushes updates when data changes.
+    """
+    from django.http import StreamingHttpResponse
+    from django.template.loader import render_to_string
+    from users.models import Notification
+    import time
+    import json
+
+    def event_stream():
+        last_count = -1
+        # Infinite loop to keep connection open
+        while True:
+            # Check current count
+            # We filter for the logged-in user
+            current_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+
+            # Push only if data changed (or initial load)
+            if current_count != last_count:
+                latest_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:20]
+                
+                html_content = render_to_string('admin_panel/notification_dropdown_content.html', {
+                    'unread_notification_count': current_count,
+                    'latest_notifications': latest_notifications
+                }, request=request) # Pass request so CSRF/URLs work
+
+                data = json.dumps({
+                    'unread_count': current_count,
+                    'html': html_content
+                })
+
+                # SSE format: "data: <payload>\n\n"
+                yield f"data: {data}\n\n"
+                
+                last_count = current_count
+
+            # Wait before next check to save resources
+            time.sleep(3)
+
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    # Required headers for SSE
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no' # Disable Nginx buffering if used
+    return response
+
+
+
 
 
 def admin_logout(request):
